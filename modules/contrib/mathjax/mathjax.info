@@ -1,0 +1,11 @@
+name = MathJax
+description = Javascript-based LaTeX rendering solution for your Backdrop website.
+backdrop = 1.x
+type = module
+configure = admin/config/content/mathjax
+files[] = mathjax.test
+
+; Added by Backdrop CMS packaging script on 2016-03-20
+project = mathjax
+version = 1.x-1.0.0
+timestamp = 1458478526
