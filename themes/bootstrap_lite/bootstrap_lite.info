@@ -1,0 +1,15 @@
+name = Bootstrap Lite
+description = Built to use Bootstrap; a sleek, intuitive, and powerful front-end framework for faster and easier web development.
+backdrop = 1.x
+type = theme
+
+settings[bootstrap_lite_cdn] = 3.3.5
+settings[bootstrap_lite_font_awesome] = 4.4.0
+settings[bootstrap_lite_container] = container
+
+stylesheets[all][] = css/style.css
+
+; Added by Backdrop CMS packaging script on 2016-12-19
+project = bootstrap_lite
+version = 1.x-1.3.5-beta4
+timestamp = 1482200044
