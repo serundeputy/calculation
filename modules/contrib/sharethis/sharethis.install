@@ -1,0 +1,137 @@
+<?php
+
+/**
+ * @file
+ * This file holds the install information for the ShareThis Module.
+ */
+
+/**
+ * Implements hook_install().
+ */
+function sharethis_install() {  
+  config_set('sharethis.settings', 'sharethis_publisherID', sharethis_create_publisher_key());
+  config_set('sharethis.settings', 'sharethis_service_option', '"Facebook:facebook","Tweet:twitter","LinkedIn:linkedin","Email:email","ShareThis:sharethis","Pinterest:pinterest"');
+  config_set('sharethis.settings', 'sharethis_option_extras', array("Google Plus One:plusone"=>"Google Plus One:plusone", "Facebook Like:fblike"=>"Facebook Like:fblike"));
+  config_set('sharethis.settings', 'sharethis_cns',array('donotcopy'=>'0','hashaddress'=>'0'));
+}
+
+/**
+ * Creates a publisher key for use with the ShareThis API.
+ */
+function sharethis_create_publisher_key() {
+  $pubkey = "dr-";
+  $pubkey .= dechex(mt_rand( 0, 0xffff ));
+  $pubkey .= dechex(mt_rand( 0, 0xffff )) . "-";
+  $pubkey .= dechex(mt_rand( 0, 0xffff )) . "-";
+  $pubkey .= dechex(mt_rand( 0, 0xffff )) . "-";
+  $pubkey .= dechex(mt_rand( 0, 0xffff )) . "-";
+  $pubkey .= dechex(mt_rand( 0, 0xffff ));
+  $pubkey .= dechex(mt_rand( 0, 0xffff ));
+  $pubkey .= dechex(mt_rand( 0, 0xffff ));
+  return $pubkey;
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function sharethis_uninstall() {
+//   db_delete('variable')
+//     ->condition('name', db_like('sharethis_') . '%', 'LIKE')
+//     ->execute();
+cache_clear_all('variables', 'cache');
+}
+
+/**
+ * Remove the custom ShareThis table.
+ */
+function sharethis_update_7001() {
+  // Move from the st_table to the variables table.
+  if (db_table_exists('st_table')) {
+    // Select all options in the ShareThis table.
+    $result = db_select('st_table', 's')
+      ->fields('s', array('st_option', 'st_value'))
+      ->execute();
+    while ($record = $result->fetchAssoc()) {
+      // Variable name switches. publisherID stays the same.
+      switch ($record['st_option']) {
+        case 'buttons':
+          $record['st_option'] = 'button_option';
+          break;
+        case 'nodeType':
+          $record['st_option'] = 'node_option';
+          break;
+        case 'services':
+          $record['st_option'] = 'service_option';
+          break;
+        case 'viewMode':
+          $record['st_option'] = 'teaser_option';
+          break;
+        case 'widget':
+          $record['st_option'] = 'widget_option';
+          break;
+      }
+      // Prefix the option with a "sharethis_" namespace.
+      config_set('sharethis.settings', 'sharethis_' . $record['st_option'], $record['st_value']);
+    }
+    // Now that our settings are in the variables table, safely drop the table.
+    db_drop_table('st_table');
+
+    // Return a success message.
+    return t('Switched from the custom ShareThis table to the Variables table.');
+  }
+}
+
+
+function sharethis_update_1000() {
+  $config = config('sharethis.settings');
+  
+  $config->set('sharethis_location', update_variable_get('sharethis_location'));
+  $config->set('sharethis_comments', update_variable_get('sharethis_comments'));
+  $config->set('sharethis_weight', update_variable_get('sharethis_weight'));
+  $config->set('sharethis_late_load', update_variable_get('sharethis_late_load'));
+  $config->set('sharethis_twitter_suffix', update_variable_get('sharethis_twitter_suffix'));
+  
+  $config->set('sharethis_twitter_handle', update_variable_get('sharethis_twitter_handle'));
+  $config->set('sharethis_twitter_recommends', update_variable_get('sharethis_twitter_recommends'));
+  $config->set('sharethis_option_onhover', update_variable_get('sharethis_option_onhover'));
+  $config->set('sharethis_option_neworzero', update_variable_get('sharethis_option_neworzero'));
+  $config->set('sharethis_option_shorten', update_variable_get('sharethis_option_shorten'));
+  
+  $config->set('sharethis_button_option', update_variable_get('sharethis_button_option'));
+  $config->set('sharethis_publisherID', update_variable_get('sharethis_publisherID'));
+  $config->set('sharethis_service_option', update_variable_get('sharethis_service_option'));
+  $config->set('sharethis_option_extras', update_variable_get('sharethis_option_extras'));
+  $config->set('sharethis_widget_option', update_variable_get('sharethis_widget_option'));
+  
+  $config->set('sharethis_option_onhover', update_variable_get('sharethis_option_onhover'));
+  $config->set('sharethis_option_neworzero', update_variable_get('sharethis_option_neworzero'));
+  $config->set('sharethis_cns', update_variable_get('sharethis_cns'));
+  $config->set('sharethis_node_types', update_variable_get('sharethis_node_types'));
+  $config->set('sharethis_option_shorten', update_variable_get('sharethis_option_shorten'));
+  $config->save();
+
+  // Delete variables.
+  update_variable_del('sharethis_location');
+  update_variable_del('sharethis_comments');
+  update_variable_del('sharethis_weight');
+  update_variable_del('sharethis_late_load');
+  update_variable_del('sharethis_twitter_suffix');
+  
+  update_variable_del('sharethis_twitter_handle');
+  update_variable_del('sharethis_twitter_recommends');
+  update_variable_del('sharethis_option_onhover');
+  update_variable_del('sharethis_option_neworzero');
+  update_variable_del('sharethis_option_shorten');
+  
+  update_variable_del('sharethis_button_option');
+  update_variable_del('sharethis_service_option');
+  update_variable_del('sharethis_option_extras');
+  update_variable_del('sharethis_widget_option');
+  update_variable_del('sharethis_option_onhover');
+  
+  update_variable_del('sharethis_option_neworzero');
+  update_variable_del('sharethis_cns');
+  update_variable_del('sharethis_node_types');
+  update_variable_del('sharethis_option_shorten');
+  update_variable_del('sharethis_publisherID');
+}
