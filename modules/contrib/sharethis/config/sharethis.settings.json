@@ -1,0 +1,26 @@
+{
+    "_config_name": "sharethis.settings",
+    "sharethis_location": "content",
+    "sharethis_comments": "FALSE",
+    "sharethis_weight": "10",
+    "sharethis_late_load": "FALSE",
+    "sharethis_twitter_suffix": "",
+
+    "sharethis_twitter_handle": "",
+    "sharethis_twitter_recommends": "",
+    "sharethis_option_onhover": "TRUE",
+    "sharethis_option_neworzero": "FALSE",
+    "sharethis_option_shorten": "TRUE",
+
+    "sharethis_button_option": "stbc_button",
+    "sharethis_publisherID": "",
+    "sharethis_service_option": "",
+    "sharethis_option_extras": "",
+    "sharethis_widget_option": "st_multi",
+
+    "sharethis_option_onhover": "TRUE",
+    "sharethis_option_neworzero": "FALSE",
+    "sharethis_cns": "",
+    "sharethis_node_types": "",
+    "sharethis_option_shorten": "TRUE"
+}
